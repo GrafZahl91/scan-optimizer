@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 from logger import LOGGER
 from config import config
@@ -9,12 +10,11 @@ class CropStep:
     def run(self, job):
 
         if not config.get("crop.enabled", True):
-            LOGGER.info("Crop deaktiviert.")
             return job
 
-        LOGGER.info("AutoCrop wird ausgeführt...")
+        LOGGER.info("ContentCrop wird ausgeführt...")
 
-        margin = config.get("crop.margin", 10)
+        margin = 25
 
         for page in job.pages:
 
@@ -24,37 +24,46 @@ class CropStep:
 
             _, thresh = cv2.threshold(
                 gray,
-                250,
+                0,
                 255,
-                cv2.THRESH_BINARY_INV
+                cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
             )
 
-            contours, _ = cv2.findContours(
+            kernel = np.ones((3, 3), np.uint8)
+            thresh = cv2.morphologyEx(
                 thresh,
-                cv2.RETR_EXTERNAL,
-                cv2.CHAIN_APPROX_SIMPLE
+                cv2.MORPH_OPEN,
+                kernel
             )
 
-            if not contours:
-                LOGGER.info(f"{page.name}: keine Kontur gefunden.")
+            ys, xs = np.where(thresh > 0)
+
+            if len(xs) == 0 or len(ys) == 0:
+                LOGGER.info(f"{page.name}: kein Inhalt erkannt.")
                 continue
 
-            contour = max(contours, key=cv2.contourArea)
+            x1 = max(xs.min() - margin, 0)
+            y1 = max(ys.min() - margin, 0)
+            x2 = min(xs.max() + margin, image.shape[1])
+            y2 = min(ys.max() + margin, image.shape[0])
 
-            x, y, w, h = cv2.boundingRect(contour)
+            debug = image.copy()
 
-            x = max(0, x - margin)
-            y = max(0, y - margin)
+            cv2.rectangle(
+                debug,
+                (x1, y1),
+                (x2, y2),
+                (0, 0, 255),
+                8
+            )
 
-            w = min(image.shape[1] - x, w + margin * 2)
-            h = min(image.shape[0] - y, h + margin * 2)
-
-            cropped = image[y:y+h, x:x+w]
-
-            cv2.imwrite(str(page), cropped)
+            cv2.imwrite(
+                f"/debug/{page.stem}-debug.png",
+                debug
+            )
 
             LOGGER.info(
-                f"{page.name}: zugeschnitten auf {w}x{h}px"
+                f"{page.name}: ContentBox {x2-x1}x{y2-y1}px"
             )
 
         return job

@@ -1,9 +1,22 @@
 # Changelog
 
-## v0.1.0
+All notable changes to this project will be documented in this file.
 
-- Initial project structure
-- Docker environment
-- Configuration
+## [v0.3.2-beta] - 2026-07-07
+
+### Added
+- Deskew pipeline step
+- Automatic blank page removal
+- Regression test structure
+- Failed document handling
+
+### Improved
+- Blank page detection
 - Logging
-- Folder watcher
+- Docker configuration
+- README
+
+### Fixed
+- Worker retry handling
+- Pipeline stability
+- PDF rebuild process

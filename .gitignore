@@ -33,3 +33,9 @@ temp/
 # Python cache
 .pytest_cache/
 failed/
+
+# Local test documents
+tests/autocrop/input/*.pdf
+tests/autocrop/output/*
+tests/autocrop/debug/*
+tests/autocrop/results/*
