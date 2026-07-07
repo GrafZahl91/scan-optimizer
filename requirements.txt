@@ -2,3 +2,6 @@ watchdog
 PyYAML
 pikepdf
 Pillow
+PyMuPDF
+numpy
+opencv-python-headless

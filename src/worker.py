@@ -1,45 +1,73 @@
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-import time
 import os
+import time
 
 from logger import LOGGER
+from pipeline.pipeline import Pipeline
+from utils import wait_until_complete, wait_until_pdf_valid
 
-
-class ScanHandler(FileSystemEventHandler):
-
-    def on_created(self, event):
-
-        if event.is_directory:
-            return
-
-        if event.src_path.lower().endswith(".pdf"):
-            LOGGER.info(f"Neue PDF erkannt: {os.path.basename(event.src_path)}")
+pipeline = Pipeline()
 
 
 class Worker:
 
     def __init__(self, folder):
+
         self.folder = folder
+
+        # Bereits vorhandene PDFs beim Start ignorieren
+        self.processed = {
+            f for f in os.listdir(folder)
+            if f.lower().endswith(".pdf")
+        }
+
+        LOGGER.info(
+            f"{len(self.processed)} vorhandene PDF(s) übersprungen."
+        )
 
     def start(self):
 
-        observer = Observer()
-
-        observer.schedule(
-            ScanHandler(),
-            self.folder,
-            recursive=False
-        )
-
-        observer.start()
-
         LOGGER.info(f"Überwache {self.folder}")
 
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            observer.stop()
+        while True:
 
-        observer.join()
+            try:
+
+                for filename in sorted(os.listdir(self.folder)):
+
+                    if not filename.lower().endswith(".pdf"):
+                        continue
+
+                    if filename in self.processed:
+                        continue
+
+                    path = os.path.join(self.folder, filename)
+
+                    LOGGER.info(f"Neue PDF gefunden: {filename}")
+
+                    if not wait_until_complete(path):
+                        LOGGER.warning("Datei noch nicht vollständig.")
+                        continue
+
+                    if not wait_until_pdf_valid(path):
+                        LOGGER.warning("PDF noch nicht gültig.")
+                        continue
+
+                    LOGGER.info("PDF ist bereit.")
+
+                    try:
+
+                        pipeline.process(path)
+
+                        self.processed.add(filename)
+
+                        LOGGER.info("Verarbeitung abgeschlossen.")
+
+                    except Exception:
+
+                        LOGGER.exception("Fehler bei Verarbeitung")
+
+            except Exception:
+
+                LOGGER.exception("Worker-Fehler")
+
+            time.sleep(2)
