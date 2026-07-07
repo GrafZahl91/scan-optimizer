@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
+*.egg-info/
 
 # Virtualenv
 .venv/
@@ -11,6 +12,13 @@ venv/
 # Logs
 logs/
 *.log
+
+# Runtime-Daten
+originals/
+optimized/
+debug/
+tmp/
+temp/
 
 # IDE
 .vscode/
@@ -22,12 +30,5 @@ logs/
 # Docker
 *.pid
 
-# Temporary
-tmp/
-temp/
-
 # Python cache
 .pytest_cache/
-
-# Bytecode
-*.egg-info/
