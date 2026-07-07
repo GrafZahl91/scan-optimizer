@@ -1,0 +1,12 @@
+services:
+  scan-optimizer:
+    build: .
+    container_name: scan-optimizer
+    restart: unless-stopped
+
+    volumes:
+      - /volume1/docker/paperless/scans:/scans
+      - /volume1/docker/scan-optimizer/originals:/originals
+      - /volume1/docker/scan-optimizer/optimized:/optimized
+      - /volume1/docker/scan-optimizer/config:/config
+      - /volume1/docker/scan-optimizer/logs:/logs

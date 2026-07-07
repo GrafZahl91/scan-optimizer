@@ -1,0 +1,19 @@
+watch_folder: /scans
+
+archive_folder: /originals
+
+optimized_folder: /optimized
+
+wait_until_complete: 5
+
+log_level: INFO
+
+compression: medium
+
+keep_color: true
+
+background_cleanup: true
+
+deskew: true
+
+remove_blank_pages: true
