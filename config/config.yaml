@@ -9,6 +9,15 @@ cleanup:
   gaussian_blur: 3
   median_blur: 3
 
+deskew:
+  enabled: true
+  min_angle: 2
+  max_angle: 10
+
+crop:
+  enabled: true
+  margin: 10
+
 blank_page:
   enabled: true
   dry_run: false

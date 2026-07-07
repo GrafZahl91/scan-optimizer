@@ -1,6 +1,7 @@
 from pipeline.archive import ArchiveStep
 from pipeline.convert import ConvertStep
 from pipeline.cleanup import CleanupStep
+from pipeline.deskew import DeskewStep
 from pipeline.blank_pages import BlankPageStep
 from pipeline.rebuild import RebuildStep
 from pipeline.job import Job
@@ -14,6 +15,7 @@ class Pipeline:
             ArchiveStep(),
             ConvertStep(),
             CleanupStep(),
+            DeskewStep(),
             BlankPageStep(),
             RebuildStep(),
         ]

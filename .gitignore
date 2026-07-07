@@ -32,3 +32,4 @@ temp/
 
 # Python cache
 .pytest_cache/
+failed/

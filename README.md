@@ -8,7 +8,7 @@ Scan Optimizer watches a folder for new PDF scans, archives the original documen
 
 ## Current Version
 
-**v0.3.1-alpha**
+**v0.3.2-beta**
 
 **Status:** 🟢 Functional Alpha
 

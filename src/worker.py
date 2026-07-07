@@ -1,4 +1,5 @@
 import os
+import shutil
 import time
 
 from logger import LOGGER
@@ -11,10 +12,8 @@ pipeline = Pipeline()
 class Worker:
 
     def __init__(self, folder):
-
         self.folder = folder
 
-        # Bereits vorhandene PDFs beim Start ignorieren
         self.processed = {
             f for f in os.listdir(folder)
             if f.lower().endswith(".pdf")
@@ -65,6 +64,20 @@ class Worker:
                     except Exception:
 
                         LOGGER.exception("Fehler bei Verarbeitung")
+
+                        failed = f"/failed/{filename}"
+
+                        try:
+                            shutil.move(path, failed)
+                            LOGGER.warning(
+                                f"PDF nach {failed} verschoben."
+                            )
+                        except Exception:
+                            LOGGER.exception(
+                                "Konnte PDF nicht nach /failed verschieben."
+                            )
+
+                        self.processed.add(filename)
 
             except Exception:
 

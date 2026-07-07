@@ -1,11 +1,15 @@
 import fitz
 
 from logger import LOGGER
+from config import config
 
 
 class RebuildStep:
 
     def run(self, job):
+
+        if config.get("debug.force_error", False):
+            raise RuntimeError("Testfehler: Rebuild absichtlich abgebrochen.")
 
         LOGGER.info("Erzeuge optimiertes PDF...")
 
@@ -16,16 +20,9 @@ class RebuildStep:
 
         for index, info in enumerate(job.page_info):
 
-            status = info["status"]
-
-            if status == "BLANK":
+            if info["status"] != "KEEP":
                 LOGGER.info(f"Seite {index + 1} entfernt.")
                 continue
-
-            if status == "BLANK (dry-run)":
-                LOGGER.info(
-                    f"Seite {index + 1} würde entfernt werden (dry-run)."
-                )
 
             dst.insert_pdf(
                 src,
@@ -42,7 +39,7 @@ class RebuildStep:
             LOGGER.info(f"{kept} Seite(n) gespeichert.")
             LOGGER.info(f"Optimiertes PDF: {output}")
         else:
-            LOGGER.warning("Keine Seiten übrig – PDF wird nicht gespeichert.")
+            LOGGER.warning("Keine Seiten übrig.")
 
         src.close()
         dst.close()
