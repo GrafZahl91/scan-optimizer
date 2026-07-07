@@ -15,5 +15,5 @@ Professional document optimization for ScanSnap, Synology and Paperless-ngx.
 
 ## Status
 
-Current Version: v0.1.0 (Development)
+Current Version: v0.3.1-alpha
 
