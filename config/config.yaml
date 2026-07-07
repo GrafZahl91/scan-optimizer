@@ -1,19 +1,17 @@
-watch_folder: /scans
-
-archive_folder: /originals
-
-optimized_folder: /optimized
-
-wait_until_complete: 5
-
 log_level: INFO
 
-compression: medium
+watch_folder: /scans
 
-keep_color: true
+convert:
+  dpi: 200
 
-background_cleanup: true
+cleanup:
+  gaussian_blur: 3
+  median_blur: 3
 
-deskew: true
-
-remove_blank_pages: true
+blank_page:
+  enabled: true
+  dry_run: false
+  border: 40
+  min_contour: 100
+  min_area: 500000

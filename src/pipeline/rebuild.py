@@ -16,9 +16,16 @@ class RebuildStep:
 
         for index, info in enumerate(job.page_info):
 
-            if info["status"] != "KEEP":
-                LOGGER.info(f"Seite {index + 1} übersprungen.")
+            status = info["status"]
+
+            if status == "BLANK":
+                LOGGER.info(f"Seite {index + 1} entfernt.")
                 continue
+
+            if status == "BLANK (dry-run)":
+                LOGGER.info(
+                    f"Seite {index + 1} würde entfernt werden (dry-run)."
+                )
 
             dst.insert_pdf(
                 src,
