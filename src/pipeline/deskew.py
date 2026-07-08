@@ -78,6 +78,15 @@ class DeskewStep(PipelineStep):
                 if angles:
                     hough_angle = float(np.median(angles))
 
+            job.report["deskew"][page.name] = {
+                "minAreaRect": round(float(rect_angle), 2),
+                "hough": (
+                    round(float(hough_angle), 2)
+                    if hough_angle is not None
+                    else None
+                ),
+            }
+
             self.log(
                 f"{page.name}: "
                 f"minAreaRect={rect_angle:.2f}° "

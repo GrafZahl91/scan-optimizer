@@ -26,7 +26,8 @@ class Job:
         # Sammelstelle für Statistiken
         self.report = {
             "document": self.name,
-            "pages": {}
+            "pages": {},
+            "deskew": {}
         }
 
     def create(self):
