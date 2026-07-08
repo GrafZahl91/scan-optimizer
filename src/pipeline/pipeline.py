@@ -1,3 +1,4 @@
+import time
 from pipeline.archive import ArchiveStep
 from pipeline.convert import ConvertStep
 from pipeline.cleanup import CleanupStep
@@ -28,7 +29,13 @@ class Pipeline:
         job = Job(pdf_path).create()
 
         for step in self.steps:
+            start = time.perf_counter()
+
             job = step.run(job)
+
+            elapsed = round(time.perf_counter() - start, 3)
+
+            job.report["timings"][step.__class__.__name__] = elapsed
 
         Report().save(job)
 

@@ -27,7 +27,8 @@ class Job:
         self.report = {
             "document": self.name,
             "pages": {},
-            "deskew": {}
+            "deskew": {},
+            "timings": {}
         }
 
     def create(self):
