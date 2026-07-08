@@ -4,6 +4,7 @@ from pipeline.convert import ConvertStep
 from pipeline.cleanup import CleanupStep
 from pipeline.enhance import EnhanceStep
 from pipeline.deskew import DeskewStep
+from pipeline.border import BorderRemovalStep
 from pipeline.blank_pages import BlankPageStep
 from pipeline.rebuild import RebuildStep
 from pipeline.job import Job
@@ -20,6 +21,7 @@ class Pipeline:
             CleanupStep(),
             EnhanceStep(),
             DeskewStep(),
+            BorderRemovalStep(),
             BlankPageStep(),
             RebuildStep(),
         ]

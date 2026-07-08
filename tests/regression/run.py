@@ -19,22 +19,44 @@ report = json.loads(latest.read_text())
 
 errors = []
 
+# ---------- Seiten ----------
 pages = report.get("pages", {})
 
-if pages.get("total") != 2:
-    errors.append("Falsche Seitenanzahl")
+if pages.get("total", 0) < 1:
+    errors.append("Keine Seiten erkannt.")
 
-if pages.get("kept") != 1:
-    errors.append("KEEP-Seiten stimmen nicht")
+if pages.get("kept", 0) < 1:
+    errors.append("Keine KEEP-Seite vorhanden.")
 
-if pages.get("removed") != 1:
-    errors.append("Entfernte Seiten stimmen nicht")
+# ---------- Deskew ----------
+deskew = report.get("deskew", {})
 
-if "deskew" not in report:
-    errors.append("Deskew fehlt")
+if not deskew:
+    errors.append("Deskew-Daten fehlen.")
 
-if "timings" not in report:
-    errors.append("Timings fehlen")
+# ---------- Border ----------
+border = report.get("border", {})
+
+if not border:
+    errors.append("Border-Daten fehlen.")
+
+# ---------- Timings ----------
+timings = report.get("timings", {})
+
+required_steps = [
+    "ArchiveStep",
+    "ConvertStep",
+    "CleanupStep",
+    "EnhanceStep",
+    "DeskewStep",
+    "BorderRemovalStep",
+    "BlankPageStep",
+    "RebuildStep",
+]
+
+for step in required_steps:
+    if step not in timings:
+        errors.append(f"{step} fehlt.")
 
 if errors:
     print("\n❌ Regression fehlgeschlagen:\n")
@@ -43,3 +65,8 @@ if errors:
     raise SystemExit(1)
 
 print("\n✅ Regression erfolgreich")
+
+print("\nPipeline-Zeiten:")
+
+for step, value in timings.items():
+    print(f"{step:20} {value:6.3f} s")

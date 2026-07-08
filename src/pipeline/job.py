@@ -28,6 +28,7 @@ class Job:
             "document": self.name,
             "pages": {},
             "deskew": {},
+            "border": {},
             "timings": {}
         }
 
