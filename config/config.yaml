@@ -16,7 +16,25 @@ deskew:
 
 crop:
   enabled: true
+
+  # Rand um die erkannte Box
   margin: 10
+
+  # Verarbeitung auf verkleinertem Bild
+  preview_scale: 0.25
+
+  # Adaptive Threshold
+  threshold_blocksize: 51
+  threshold_c: 15
+
+  # Morphologie
+  close_kernel: 15
+  dilate_horizontal: 45
+  dilate_vertical: 25
+  open_kernel: 3
+
+  # Mindestgröße einer Kontur
+  min_area: 300
 
 blank_page:
   enabled: true
