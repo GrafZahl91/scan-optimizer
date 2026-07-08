@@ -89,4 +89,17 @@ class BlankPageStep:
                 }
             )
 
+
+        kept_pages = sum(
+            1
+            for page in job.page_info
+            if page["status"] == "KEEP"
+        )
+
+        job.report["pages"] = {
+            "total": len(job.page_info),
+            "kept": kept_pages,
+            "removed": len(job.page_info) - kept_pages,
+        }
+
         return job
