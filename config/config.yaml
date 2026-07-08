@@ -33,3 +33,6 @@ enhance:
     enabled: true
     clip_limit: 2.0
     tile_grid_size: 8
+
+pdf:
+  jpeg_quality: 80

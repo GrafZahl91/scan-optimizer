@@ -1,53 +1,61 @@
-# 📄 Scan Optimizer
+# Scan Optimizer
 
-Automatic scan optimization pipeline for **ScanSnap**, **Synology NAS** and **Paperless-ngx**.
+Automatic PDF optimization pipeline for Paperless-ngx and Synology NAS.
 
-Scan Optimizer watches a folder for new PDF scans, archives the original document, optimizes the pages and generates a cleaned PDF ready for Paperless-ngx.
+## Features
 
----
-
-## Current Version
-
-**v0.3.2-beta**
-
-**Status:** 🟢 Functional Alpha
-
----
-
-## Current Features
-
-- Automatic folder monitoring
-- Original PDF archiving
-- PDF rendering using PyMuPDF
-- Image optimization using OpenCV
-- Automatic blank page detection
+- Automatic image enhancement (CLAHE)
+- Automatic deskew
+- Automatic border detection
+- Automatic document cropping
 - Automatic blank page removal
-- Configurable via YAML
+- JPEG based PDF rebuild
+- Configurable JPEG quality
+- Debug reports
 - Docker support
-- Synology NAS compatible
 - Paperless-ngx integration
 
----
+## Pipeline
 
-## Processing Pipeline
-
-```text
-Incoming PDF
-      │
-      ▼
-Archive Original
-      │
-      ▼
-Render PDF
-      │
-      ▼
-Image Optimization
-      │
-      ▼
+PDF
+ ↓
+Render (PyMuPDF)
+ ↓
+Image Cleanup
+ ↓
+CLAHE Enhancement
+ ↓
+Deskew
+ ↓
+Border Detection
+ ↓
+Auto Crop
+ ↓
 Blank Page Detection
-      │
-      ▼
-Rebuild PDF
-      │
-      ▼
+ ↓
+JPEG Compression
+ ↓
 Optimized PDF
+
+## Configuration
+
+Configuration is stored in:
+
+config/config.yaml
+
+Example:
+
+pdf:
+  jpeg_quality: 80
+
+## Requirements
+
+- Docker
+- Docker Compose
+- Python 3.8+
+- OpenCV
+- PyMuPDF
+
+## License
+
+MIT License

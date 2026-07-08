@@ -1,9 +1,25 @@
 # Changelog
 
-## v0.1.0
+## v1.0.0
 
-- Initial project structure
-- Docker environment
-- Configuration
-- Logging
-- Folder watcher
+### Added
+
+- Automatic border detection
+- Automatic document cropping
+- CLAHE image enhancement
+- Deskew correction
+- Blank page detection
+- JPEG based PDF rebuild
+- Configurable JPEG quality
+- Debug reports
+- Regression tests
+
+### Changed
+
+- Complete rebuild from processed images
+- Massive PDF size reduction
+- Contour based border detection
+
+### Removed
+
+- Legacy profile based border detection

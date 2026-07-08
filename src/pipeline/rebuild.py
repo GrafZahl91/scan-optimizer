@@ -31,7 +31,7 @@ class RebuildStep:
             ok, jpg = cv2.imencode(
                 ".jpg",
                 image,
-                [cv2.IMWRITE_JPEG_QUALITY, 92],
+                [cv2.IMWRITE_JPEG_QUALITY, config.get("pdf.jpeg_quality", 80)],
             )
 
             if not ok:
