@@ -1,51 +1,66 @@
-import cv2
-import numpy as np
+from pipeline.border_detector_profile import ProfileBorderDetector
+from pipeline.border_detector_contour import ContourBorderDetector
 
 
 class BorderDetector:
+
+    def __init__(self):
+        self.profile = ProfileBorderDetector()
+        self.contour = ContourBorderDetector()
+
+    def _plausible(self, result, width, height):
+
+        d = result["detected"]
+
+        left = d.get("left", 0)
+        right = d.get("right", 0)
+        top = d.get("top", 0)
+        bottom = d.get("bottom", 0)
+
+        crop_w = width - left - right
+        crop_h = height - top - bottom
+
+        if crop_w < width * 0.70:
+            return False
+
+        if crop_h < height * 0.70:
+            return False
+
+        if left > width * 0.20:
+            return False
+
+        if right > width * 0.20:
+            return False
+
+        if top > height * 0.20:
+            return False
+
+        if bottom > height * 0.20:
+            return False
+
+        return True
+
     def detect(self, gray):
+
         h, w = gray.shape
 
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-        edges = cv2.Canny(blurred, 40, 120)
+        profile = self.profile.detect(gray)
 
-        kernel = np.ones((5, 5), np.uint8)
-        edges = cv2.dilate(edges, kernel, iterations=2)
-        edges = cv2.erode(edges, kernel, iterations=1)
+        if self._plausible(profile, w, h):
+            return profile
 
-        contours, _ = cv2.findContours(
-            edges,
-            cv2.RETR_EXTERNAL,
-            cv2.CHAIN_APPROX_SIMPLE,
-        )
+        contour = self.contour.detect(gray)
 
-        if not contours:
-            return {
-                "left": {"dark_ratio": 0},
-                "right": {"dark_ratio": 0},
-                "profiles": {},
-                "detected": {
-                    "left": 0,
-                    "right": 0,
-                    "top": 0,
-                    "bottom": 0,
-                    "confidence": 0,
-                },
-            }
-
-        contour = max(contours, key=cv2.contourArea)
-
-        x, y, cw, ch = cv2.boundingRect(contour)
+        if self._plausible(contour, w, h):
+            return contour
 
         return {
-            "left": {"dark_ratio": 0},
-            "right": {"dark_ratio": 0},
-            "profiles": {},
             "detected": {
-                "left": x,
-                "right": w - (x + cw),
-                "top": y,
-                "bottom": h - (y + ch),
-                "confidence": 1.0,
+                "left": 0,
+                "right": 0,
+                "top": 0,
+                "bottom": 0,
+                "confidence": 0,
             },
+            "profiles": {},
         }

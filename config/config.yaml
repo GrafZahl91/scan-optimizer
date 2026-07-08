@@ -36,3 +36,9 @@ enhance:
 
 pdf:
   jpeg_quality: 80
+
+ocr:
+  enabled: true
+  adaptive_threshold: false
+  denoise: true
+  sharpen: true
