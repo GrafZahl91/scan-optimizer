@@ -1,17 +1,19 @@
 import cv2
 
-from logger import LOGGER
 from config import config
+from pipeline.base import PipelineStep
 
 
-class EnhanceStep:
+class EnhanceStep(PipelineStep):
+
+    name = "Enhance"
 
     def run(self, job):
 
         if not config.get("enhance.enabled", True):
             return job
 
-        LOGGER.info("ImageEnhancement wird ausgeführt...")
+        self.log("Starte Verarbeitung...")
 
         for page in job.pages:
 
@@ -20,7 +22,7 @@ class EnhanceStep:
             if image is None:
                 continue
 
-            job.debug.save(
+            self.debug(job, 
                 "enhance",
                 f"{page.stem}_01_before.png",
                 image,
@@ -29,7 +31,7 @@ class EnhanceStep:
             if config.get("enhance.autocontrast", True):
                 image = self.autocontrast(image)
 
-            job.debug.save(
+            self.debug(job, 
                 "enhance",
                 f"{page.stem}_02_after.png",
                 image,
