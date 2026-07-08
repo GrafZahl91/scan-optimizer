@@ -33,3 +33,7 @@ temp/
 # Python cache
 .pytest_cache/
 failed/
+
+# Private regression tests
+tests-private/
+

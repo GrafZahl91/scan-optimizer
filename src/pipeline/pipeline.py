@@ -65,5 +65,4 @@ class Pipeline:
 
         Report().save(job)
 
-            Report().save(job)
         return job
