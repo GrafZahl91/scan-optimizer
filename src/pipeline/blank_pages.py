@@ -12,19 +12,20 @@ class BlankPageStep:
         LOGGER.info("Analysiere Seiten...")
 
         border = config.get("blank_page.border", 40)
-        dry_run = config.get("blank_page.dry_run", True)
+        dry_run = config.get("blank_page.dry_run", False)
 
-        # Mindestgröße einzelner Konturen
         min_contour = config.get("blank_page.min_contour", 100)
-
-        # Mindestfläche aller Konturen zusammen
-        min_area = config.get("blank_page.min_area", 500000)
+        min_coverage = config.get("blank_page.min_coverage", 0.003)
 
         job.page_info = []
 
         for page in job.pages:
 
             gray = cv2.imread(str(page), cv2.IMREAD_GRAYSCALE)
+
+            if gray is None:
+                LOGGER.warning(f"{page.name}: Bild konnte nicht geladen werden.")
+                continue
 
             h, w = gray.shape
 
@@ -67,9 +68,12 @@ class BlankPageStep:
                 area += a
                 kept += 1
 
+            page_area = gray.shape[0] * gray.shape[1]
+            coverage = area / page_area if page_area else 0
+
             status = "KEEP"
 
-            if area < min_area:
+            if coverage < min_coverage:
                 status = "BLANK"
 
             if dry_run and status == "BLANK":
@@ -79,6 +83,7 @@ class BlankPageStep:
                 f"{page.name}: "
                 f"contours={kept} "
                 f"area={int(area)} "
+                f"coverage={coverage:.3%} "
                 f"-> {status}"
             )
 
@@ -88,7 +93,6 @@ class BlankPageStep:
                     "status": status
                 }
             )
-
 
         kept_pages = sum(
             1

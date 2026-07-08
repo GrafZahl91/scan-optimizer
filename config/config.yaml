@@ -23,7 +23,7 @@ blank_page:
   dry_run: false
   border: 40
   min_contour: 100
-  min_area: 500000
+  min_coverage: 0.003
 
 enhance:
   enabled: true
@@ -41,4 +41,10 @@ ocr:
   enabled: true
   adaptive_threshold: false
   denoise: true
+  sharpen: true
+
+ocr:
+  enabled: false
+  denoise: true
+  adaptive_threshold: false
   sharpen: true

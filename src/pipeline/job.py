@@ -19,6 +19,7 @@ class Job:
 
         self.archive = None
         self.output = None
+        self.doc_type = None
 
         # Gemeinsamer Debug-Helper
         self.debug = Debug(self)

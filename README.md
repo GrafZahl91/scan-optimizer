@@ -6,9 +6,14 @@
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
 
-Automatic PDF optimization pipeline for **Paperless-ngx** running on **Docker** and **Synology NAS**.
+**Smart PDF optimization for Paperless-ngx with automatic document type detection.**
 
-Scan Optimizer automatically improves scanned PDF documents before they are imported into Paperless-ngx. The pipeline enhances image quality, straightens pages, removes borders, crops documents, removes blank pages and rebuilds a compact PDF while preserving excellent readability.
+Scan Optimizer automatically detects whether an incoming PDF is a **scanned document** or a **digitally generated PDF**.
+
+- **Scanned PDFs** are automatically enhanced using an OpenCV-based image processing pipeline.
+- **Digital PDFs** bypass image processing completely, preserving vector graphics, colors and text quality without unnecessary recompression.
+
+Designed for fully automated document workflows on **Paperless-ngx**, **Docker** and **Synology NAS**.
 
 ---
 
@@ -18,32 +23,43 @@ Most scanner software simply stores PDFs exactly as they were scanned.
 
 Scan Optimizer automatically performs:
 
+- Automatic document type detection
 - Image enhancement
 - Contrast optimization (CLAHE)
 - Deskew correction
-- Border detection
+- Hybrid border detection
 - Automatic cropping
 - Blank page removal
+- OCR preprocessing
 - PDF optimization
-- JPEG compression
+- JPEG compression (scanned documents only)
 
-The result is a clean and compact PDF ready for archiving in Paperless-ngx.
+Digital PDFs are preserved without quality loss.
 
 ---
 
 # Features
 
+## Intelligent Document Processing
+
+- Automatic document type detection
+- Separate processing paths for scanned and digital PDFs
+- Digital PDF passthrough
+- Automatic processing reports
+- Debug image generation
+
 ## Image Processing
 
 - Automatic image cleanup
 - CLAHE contrast enhancement
+- OCR preprocessing
 - Automatic deskew correction
-- Automatic border detection
+- Hybrid border detection
 - Automatic document cropping
 
 ## PDF Optimization
 
-- Rebuild PDF from processed images
+- Rebuild optimized PDFs from processed images
 - JPEG compression
 - Configurable JPEG quality
 - Significant file size reduction
@@ -52,9 +68,8 @@ The result is a clean and compact PDF ready for archiving in Paperless-ngx.
 ## Document Processing
 
 - Automatic blank page detection
+- Coverage-based blank page analysis
 - Remove empty pages
-- Processing reports
-- Debug image generation
 
 ## Platform Support
 
@@ -69,101 +84,56 @@ The result is a clean and compact PDF ready for archiving in Paperless-ngx.
 # Processing Pipeline
 
 ```text
-Incoming PDF
-      │
-      ▼
-Archive Original
-      │
-      ▼
-Render PDF (PyMuPDF)
-      │
-      ▼
-Image Cleanup
-      │
-      ▼
-CLAHE Enhancement
-      │
-      ▼
-Deskew
-      │
-      ▼
-Border Detection
-      │
-      ▼
-Automatic Crop
-      │
-      ▼
-Blank Page Detection
-      │
-      ▼
-JPEG Compression
-      │
-      ▼
-Rebuild Optimized PDF
-      │
-      ▼
-Ready for Paperless-ngx
+                     Incoming PDF
+                          │
+                          ▼
+              Document Type Detection
+                          │
+             ┌────────────┴────────────┐
+             │                         │
+             ▼                         ▼
+        DIGITAL PDF              SCANNED PDF
+             │                         │
+             │                  Archive Original
+             │                         │
+             │                  Render PDF
+             │                         │
+             │                  Image Cleanup
+             │                         │
+             │                  CLAHE Enhancement
+             │                         │
+             │                  OCR Preprocessing
+             │                         │
+             │                  Deskew Correction
+             │                         │
+             │                  Hybrid Border Detection
+             │                         │
+             │                  Automatic Cropping
+             │                         │
+             │                  Blank Page Detection
+             │                         │
+             │                  JPEG Compression
+             │                         │
+             └──────────────► Optimized PDF
 ```
 
 ---
 
 # Configuration
 
-Configuration is stored in
+Configuration is stored in:
 
 ```text
 config/config.yaml
-```
-
-Example:
-
-```yaml
-convert:
-  dpi: 200
-
-cleanup:
-  gaussian_blur: 3
-  median_blur: 3
-
-deskew:
-  enabled: true
-  min_angle: 2
-  max_angle: 10
-
-crop:
-  enabled: true
-  margin: 10
-
-blank_page:
-  enabled: true
-  dry_run: false
-
-enhance:
-  enabled: true
-  autocontrast: true
-  clahe:
-    enabled: true
-    clip_limit: 2.0
-    tile_grid_size: 8
-
-pdf:
-  jpeg_quality: 80
 ```
 
 ---
 
 # Installation
 
-Clone the repository
-
 ```bash
 git clone https://github.com/GrafZahl91/scan-optimizer.git
 cd scan-optimizer
-```
-
-Start the optimizer
-
-```bash
 docker compose up -d --build
 ```
 
@@ -177,83 +147,53 @@ The optimizer automatically watches the configured scan directory and processes 
 config/
 src/
 tests/
+docs/
 debug/
 optimized/
 originals/
 docker-compose.yml
 README.md
 CHANGELOG.md
+CONTRIBUTING.md
 ```
 
 ---
 
 # Performance
 
-Current processing pipeline includes
+Current processing pipeline includes:
 
+- Automatic document type detection
 - PyMuPDF rendering
 - OpenCV image cleanup
 - CLAHE enhancement
+- OCR preprocessing
 - Automatic deskew
-- Contour-based border detection
+- Hybrid border detection
 - Automatic cropping
-- Blank page removal
+- Coverage-based blank page detection
 - JPEG PDF rebuild
 
-Typical documents are significantly reduced in size while maintaining excellent readability.
-
----
-
-# Debugging
-
-Debug information is written to
-
-```text
-debug/
-```
-
-including
-
-- Border detection images
-- Processing reports
-- Timing information
+Digital PDFs are preserved without unnecessary rendering while scanned documents are automatically optimized.
 
 ---
 
 # Testing
 
-Regression test documents are located in
+Regression test documents are located in:
 
 ```text
 tests/
 ```
 
-The repository includes sample documents for validating
+The repository contains reference documents for validating:
 
-- Border detection
-- Cropping
-- Blank page removal
+- Document type detection
+- Hybrid border detection
+- Automatic cropping
+- Blank page detection
+- OCR preprocessing
 - PDF generation
-
----
-
-# Requirements
-
-- Python 3.8+
-- Docker
-- Docker Compose
-- OpenCV
-- PyMuPDF
-
----
-
-# Supported Platforms
-
-- ✅ Synology NAS
-- ✅ Docker
-- ✅ Docker Compose
-- ✅ Linux
-- ✅ Paperless-ngx
 
 ---
 
@@ -261,39 +201,20 @@ The repository includes sample documents for validating
 
 ## Version 1.x
 
-- Improved PDF compression
-- Additional enhancement filters
-- OCR preprocessing improvements
-- More regression tests
-- Performance optimizations
+- Lossless PDF optimization
+- OCR text layer
+- Additional regression tests
+- Performance improvements
 
 ## Future
 
 - Web interface
 - Batch statistics
 - Quality profiles
-- OCR quality estimation
-
----
-
-# Project Status
-
-Current status
-
-- ✅ Stable
-- ✅ Production Ready
-- ✅ Actively Maintained
+- Plugin architecture
 
 ---
 
 # License
 
 MIT License
-
----
-
-# Author
-
-Developed for Paperless-ngx document workflows running on Synology NAS using Docker.
-
-Contributions, bug reports and feature requests are welcome.
