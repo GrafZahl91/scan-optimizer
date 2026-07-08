@@ -1,5 +1,6 @@
 from pathlib import Path
 import shutil
+from debug import Debug
 
 
 class Job:
@@ -18,6 +19,9 @@ class Job:
 
         self.archive = None
         self.output = None
+
+        # Gemeinsamer Debug-Helper
+        self.debug = Debug(self)
 
     def create(self):
 

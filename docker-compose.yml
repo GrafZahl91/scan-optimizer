@@ -11,3 +11,4 @@ services:
       - /volume1/docker/scan-optimizer/failed:/failed
       - /volume1/docker/scan-optimizer/config:/config
       - /volume1/docker/scan-optimizer/logs:/logs
+      - /volume1/docker/scan-optimizer/debug:/debug
