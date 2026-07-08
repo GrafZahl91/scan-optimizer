@@ -1,19 +1,21 @@
 import cv2
 import numpy as np
 
-from logger import LOGGER
 from config import config
+from pipeline.base import PipelineStep
 
 
-class DeskewStep:
+class DeskewStep(PipelineStep):
+
+    name = "Deskew"
 
     def run(self, job):
 
         if not config.get("deskew.enabled", True):
-            LOGGER.info("Deskew deaktiviert.")
+            self.log("Deaktiviert.")
             return job
 
-        LOGGER.info("Deskew wird ausgeführt...")
+        self.log("Starte Verarbeitung...")
 
         for page in job.pages:
 
@@ -76,7 +78,7 @@ class DeskewStep:
                 if angles:
                     hough_angle = float(np.median(angles))
 
-            LOGGER.info(
+            self.log(
                 f"{page.name}: "
                 f"minAreaRect={rect_angle:.2f}° "
                 f"Hough={hough_angle}"

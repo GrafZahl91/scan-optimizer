@@ -23,6 +23,12 @@ class Job:
         # Gemeinsamer Debug-Helper
         self.debug = Debug(self)
 
+        # Sammelstelle für Statistiken
+        self.report = {
+            "document": self.name,
+            "pages": {}
+        }
+
     def create(self):
 
         if self.workdir.exists():

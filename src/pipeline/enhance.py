@@ -29,7 +29,11 @@ class EnhanceStep(PipelineStep):
             )
 
             if config.get("enhance.autocontrast", True):
-                image = self.autocontrast(image)
+                image = self.measure(
+                    "CLAHE",
+                    self.autocontrast,
+                    image,
+                )
 
             self.debug(job, 
                 "enhance",

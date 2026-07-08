@@ -6,6 +6,7 @@ from pipeline.deskew import DeskewStep
 from pipeline.blank_pages import BlankPageStep
 from pipeline.rebuild import RebuildStep
 from pipeline.job import Job
+from report import Report
 
 
 class Pipeline:
@@ -28,5 +29,7 @@ class Pipeline:
 
         for step in self.steps:
             job = step.run(job)
+
+        Report().save(job)
 
         return job
