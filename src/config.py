@@ -1,5 +1,6 @@
 from pathlib import Path
 import yaml
+from profile_loader import apply_profile
 
 
 CONFIG_PATH = Path("/config/config.yaml")
@@ -11,6 +12,7 @@ class Config:
 
         with CONFIG_PATH.open("r", encoding="utf-8") as f:
             self.data = yaml.safe_load(f)
+        apply_profile(self)
 
     def get(self, key, default=None):
 
